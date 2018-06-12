@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>scroll</title>
+<style type="text/css">
+#touch { width: 650px; height: 1200px; background-color: red}
+</style>
+<script type="text/javascript" defer=true>
+let touchCount = 0;
+let touchStartX = 0;
+let touchStartY = 0;
+let pointerFuncCall = 0;
+let pointerCount = 0;
+let pointerDownX = 0;
+let pointerDownY = 0;
+function init() {
+  var canvas = document.getElementById("touch");
+  canvas.addEventListener("touchstart", function(evt) {
+    evt.preventDefault();
+    touchCount = 0;
+    touchStartX = evt.touches[0].pageX;
+    touchStartY = evt.touches[0].pageY;
+    console.log("TouchStat touchstart X:" + touchStartX + " Y:" + touchStartY);
+  }, false);
+  canvas.addEventListener("touchmove", function(evt) {
+    evt.preventDefault();
+    var touch = evt.touches[0];
+    ++ touchCount;
+    console.log("TouchStat touchmove idx:" + touchCount + " X:" + touch.pageX + " Y:" + touch.pageY + " DeltaX:" + (touch.pageX - touchStartX) + " DeltaY:" + (touch.pageY - touchStartY));
+  }, false);
+  canvas.addEventListener("touchend", function(evt) {
+    console.log("TouchStat touchend idx:" + touchCount);
+  }, false);
+
+  window.addEventListener("pointerdown", function(evt) {
+    pointerFuncCall = 0;
+    pointerCount = 0;
+    pointerDownX = evt.pageX;
+    pointerDownY = evt.pageY;
+    console.log("TouchStat pointerdown X:" + pointerDownX + " Y:" + pointerDownY);
+  });
+  window.addEventListener("pointermove", function(evt) {
+    ++ pointerFuncCall;
+    for (let e of evt.getCoalescedEvents()) {
+      ++ pointerCount;
+      console.log("TouchStat pointermove func:" + pointerFuncCall + " idx:" + pointerCount + " X:" + e.pageX + " Y:" + e.pageY + " DeltaX:" + (e.pageX - touchStartX) + " DeltaY:" + (e.pageY - touchStartY));
+    }
+  });
+  window.addEventListener("pointerup", function(evt) {
+    console.log("TouchStat pointerup func:" + pointerFuncCall + " idx:" + pointerCount);
+  });
+
+}
+</script>
+<body onload="init()">
+<canvas id="touch">
+</body>
+</html>
+
