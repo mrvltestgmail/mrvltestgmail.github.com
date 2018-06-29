@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+<title>CSS Translate</title>
+<style type="text/css">
+html, body {
+  width: 100%;
+  height: 100%;
+}
+#div {
+  width: 64px;
+  height: 64px;
+  background-color: #0000FF;
+  webkit-transition-property: transform;
+  webkit-transition-duration: 0ms
+}
+</style>
+<script>
+function translateDown() {
+  console.log("translate down");
+  window.translateY += window.step;
+/*
+  window.div.style.transform = "translateY(" + window.translateY + "px)";
+  window.div.style.transition= "transform 0ms";
+*/
+  window.div.style["-webkit-transform"] = "translateY(" + window.translateY + "px) translateZ(0px)";
+  window.div.style["-webkit-transition-duration"] = "0ms";
+}
+
+function translateUp() {
+  console.log("translate up");
+  window.translateY -= window.step;
+/*
+  window.div.style.transform = "translateY(" + window.translateY + "px)";
+  window.div.style.transition= "transform 0ms";
+*/
+  window.div.style["-webkit-transform"] = "translateY(" + window.translateY + "px) translateZ(0px)";
+  window.div.style["-webkit-transition-duration"] = "0ms";
+}
+
+function transitionDown() {
+  console.log("transition down");
+  window.translateY += window.step;
+/*
+  window.div.style.transform = "translateY(" + window.translateY + "px)";
+  window.div.style.transition= "transform 2000ms";
+*/
+  window.div.style["-webkit-transform"] = "translateY(" + window.translateY + "px) translateZ(0px)";
+  window.div.style["-webkit-transition-duration"] = "2000ms";
+}
+
+function transitionUp() {
+  console.log("transition up");
+  window.translateY -= window.step;
+/*
+  window.div.style.transform = "translateY(" + window.translateY + "px)";
+  window.div.style.transition= "transform 2000ms";
+*/
+  window.div.style["-webkit-transform"] = "translateY(" + window.translateY + "px) translateZ(0px)";
+  window.div.style["-webkit-transition-duration"] = "2000ms";
+}
+
+
+function init() {
+  window.div = document.getElementById("div");
+  window.step = 64;
+  window.translateY = 0;
+}
+</script>
+</head>
+<div>
+<input type="button" value="translate down" style="background-color:#FFF0FF" onclick="translateDown()" />
+<input type="button" value="translate up"   style="background-color:#FFF0FF" onclick="translateUp()" />
+</div>
+<div>
+<input type="button" value="transition down" style="background-color:#FFFFF0" onclick="transitionDown()" />
+<input type="button" value="transition up"   style="background-color:#FFFFF0" onclick="transitionUp()" />
+</div>
+<body onload="init()">
+<div id="div""></div>
+</body>
+</html>
