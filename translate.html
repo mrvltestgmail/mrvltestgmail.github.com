@@ -13,53 +13,60 @@ html, body {
   width: 64px;
   height: 64px;
   background-color: #0000FF;
+  transform: translateY(0px) translateZ(0px);
+  transition-property: transform;
+  transition-duration: 0ms
+/*
   webkit-transition-property: transform;
   webkit-transition-duration: 0ms
+*/
+}
+.btn {
+  width: 150px;
+  height: 18px
 }
 </style>
 <script>
+
+function updateTrans(duration) {
+  var translateZ = "";
+  if (document.getElementById("useTranslateZ").checked) {
+    translateZ = " translateZ(0px)";
+  }
+  var transform = "translateY(" + window.translateY + "px)" + translateZ;
+  var transition = "transform " + duration + "ms";
+  if (document.getElementById("useWebkitPrefix").checked) {
+    window.div.style["-webkit-transform"] = transform;
+    window.div.style["-webkit-transition"] = transition;
+  } else {
+    window.div.style.transform = transform;
+    window.div.style.transition= transition;
+  }
+  
+}
+
 function translateDown() {
   console.log("translate down");
   window.translateY += window.step;
-/*
-  window.div.style.transform = "translateY(" + window.translateY + "px)";
-  window.div.style.transition= "transform 0ms";
-*/
-  window.div.style["-webkit-transform"] = "translateY(" + window.translateY + "px) translateZ(0px)";
-  window.div.style["-webkit-transition-duration"] = "0ms";
+  updateTrans(0);
 }
 
 function translateUp() {
   console.log("translate up");
   window.translateY -= window.step;
-/*
-  window.div.style.transform = "translateY(" + window.translateY + "px)";
-  window.div.style.transition= "transform 0ms";
-*/
-  window.div.style["-webkit-transform"] = "translateY(" + window.translateY + "px) translateZ(0px)";
-  window.div.style["-webkit-transition-duration"] = "0ms";
+  updateTrans(0);
 }
 
 function transitionDown() {
   console.log("transition down");
   window.translateY += window.step;
-/*
-  window.div.style.transform = "translateY(" + window.translateY + "px)";
-  window.div.style.transition= "transform 2000ms";
-*/
-  window.div.style["-webkit-transform"] = "translateY(" + window.translateY + "px) translateZ(0px)";
-  window.div.style["-webkit-transition-duration"] = "2000ms";
+  updateTrans(2000);
 }
 
 function transitionUp() {
   console.log("transition up");
   window.translateY -= window.step;
-/*
-  window.div.style.transform = "translateY(" + window.translateY + "px)";
-  window.div.style.transition= "transform 2000ms";
-*/
-  window.div.style["-webkit-transform"] = "translateY(" + window.translateY + "px) translateZ(0px)";
-  window.div.style["-webkit-transition-duration"] = "2000ms";
+  updateTrans(2000);
 }
 
 
@@ -67,16 +74,25 @@ function init() {
   window.div = document.getElementById("div");
   window.step = 64;
   window.translateY = 0;
+  updateTrans(0);
+}
+
+function check() {
+  console.log("check");
 }
 </script>
 </head>
 <div>
-<input type="button" value="translate down" style="background-color:#FFF0FF" onclick="translateDown()" />
-<input type="button" value="translate up"   style="background-color:#FFF0FF" onclick="translateUp()" />
+<input id="useTranslateZ" type="checkbox" checked="checked" style="background-color:#F0FFFF" onclick="check()" /> use translateZ(0)
+<input id="useWebkitPrefix" type="checkbox" style="background-color:#F0FFFF" onclick="check()" /> use webkit-prefix
 </div>
 <div>
-<input type="button" value="transition down" style="background-color:#FFFFF0" onclick="transitionDown()" />
-<input type="button" value="transition up"   style="background-color:#FFFFF0" onclick="transitionUp()" />
+<input id="b1" type="button" class="btn" value="translate down" style="background-color:#FFF0FF" onclick="translateDown()" />
+<input id="b2" type="button" class="btn" value="translate up"   style="background-color:#FFF0FF" onclick="translateUp()" />
+</div>
+<div>
+<input id="b3" type="button" class="btn" value="transition down" style="background-color:#FFFFF0" onclick="transitionDown()" />
+<input id="b4" type="button" class="btn" value="transition up"   style="background-color:#FFFFF0" onclick="transitionUp()" />
 </div>
 <body onload="init()">
 <div id="div""></div>
