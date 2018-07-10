@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<title>Transform Scroll</title>
+<style type="text/css">
+html, body, div {
+  height: 100%;
+  padding: 0px 0px 0px 0px;
+  border-width: 0px;
+  margin: 0px 0px 0px 0px;
+}
+
+body {
+  background-color:#000000;
+}
+
+#div0 {
+  transform: translateY(0px) translateZ(0px);
+  transition: transform 0ms;
+}
+
+#div1 {
+  background-color: #F0FFFF;
+}
+#div2 {
+  background-color: #FFF0FF;
+}
+#div3 {
+  background-color: #FFFFF0;
+}
+#div4 {
+  background-color: #F0F0FF;
+}
+</style>
+<script type="text/javascript">
+function touchStart(evt) {
+  window.startY = window.translateY;
+  window.lastY = evt.touches[0].clientY;
+  console.log("touchstart " + evt.touches[0].clientY);
+  evt.preventDefault();
+}
+
+function touchMove(evt) {
+  window.translateY = window.translateY + (evt.touches[0].clientY - window.lastY);
+  if (window.translateY < minY)
+    window.translateY = minY;
+  if (window.translateY > maxY)
+    window.translateY = maxY;
+  updateTranslateY(0);
+  window.lastY = evt.touches[0].clientY;
+  console.log("touchmove " + evt.touches[0].clientY + " tranlateY " + window.translateY);
+  evt.preventDefault();
+}
+
+function touchEnd(evt) {
+  console.log("touchend tranlateY " + window.translateY);
+  var oldTranslateY = window.translateY;
+  if (window.translateY - window.startY > window.pageSwitchThreshold)
+    window.translateY = window.startY + window.container.clientHeight;
+  else if (window.translateY - window.startY < -window.pageSwitchThreshold)
+    window.translateY = window.startY - window.container.clientHeight;
+  else
+    window.translateY = window.startY;
+  var duration = window.maxDuration * Math.abs(window.translateY - oldTranslateY) / window.container.clientHeight;
+  updateTranslateY(duration);
+  evt.preventDefault();
+}
+
+function updateTranslateY(duration) {
+  window.container.style.transitionDuration = duration + "ms";
+  window.container.style.transform = "translateY(" + window.translateY + "px) translateZ(0px)";
+}
+
+function load() {
+  window.container = document.getElementById("div0");
+  window.container.addEventListener("touchstart", touchStart, false);
+  window.container.addEventListener("touchmove",  touchMove,  false);
+  window.container.addEventListener("touchend",   touchEnd,   false);
+  window.minY = -(window.container.scrollHeight - window.container.clientHeight);
+  window.maxY = 0;
+  window.maxDuration = 500.0;
+  window.pageSwitchThreshold = window.container.clientHeight / 3;
+  window.translateY = window.startY = window.lastY = 0;
+  updateTranslateY();
+}
+</script>
+</head>
+<body onload="load()">
+<div id="div0" class="container">
+<div id="div1" class="page">page 1</div>
+<div id="div2" class="page">page 2</div>
+<div id="div3" class="page">page 3</div>
+<div id="div4" class="page">page 4</div>
+</div>
+</body>
+</html>
