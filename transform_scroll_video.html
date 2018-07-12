@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<title>Transform Scroll</title>
+<style type="text/css">
+html, body, div {
+  height: 100%;
+  padding: 0px 0px 0px 0px;
+  border-width: 0px;
+  margin: 0px 0px 0px 0px;
+}
+
+body {
+  background-color:#000000;
+}
+
+#div0 {
+  transform: translateY(0px) translateZ(0px);
+  transition: transform 0ms;
+}
+
+.page {
+  display: flex;
+  justify-content: center;
+  align-items:center;
+}
+
+#div1 {
+  background-color: #F0FFFF;
+  vertical-align: middle;
+}
+#div2 {
+  background-color: #FFF0FF;
+}
+#div3 {
+  background-color: #FFFFF0;
+}
+#div4 {
+  background-color: #F0F0FF;
+}
+#div5 {
+  background-color: #FFF0F0;
+}
+</style>
+<script type="text/javascript">
+function touchStart(evt) {
+  window.lastY = evt.touches[0].clientY;
+  console.log("touchstart " + evt.touches[0].clientY);
+  // evt.preventDefault();
+}
+
+function touchMove(evt) {
+  window.translateY = window.translateY + (evt.touches[0].clientY - window.lastY);
+  if (window.translateY < minY)
+    window.translateY = minY;
+  if (window.translateY > maxY)
+    window.translateY = maxY;
+  updateTranslateY(0);
+  window.lastY = evt.touches[0].clientY;
+  console.log("touchmove " + evt.touches[0].clientY + " tranlateY " + window.translateY);
+  evt.preventDefault();
+}
+
+function touchEnd(evt) {
+  console.log("touchend tranlateY " + window.translateY);
+  window.lastPage = window.currentPage;
+  var oldTranslateY = window.translateY;
+  var oldPageY = - window.currentPage * window.container.clientHeight;
+  if (oldPageY - window.translateY > window.pageSwitchThreshold)
+    window.currentPage += 1
+  else if (window.translateY - oldPageY > window.pageSwitchThreshold)
+    window.currentPage -= 1
+  window.translateY = - window.currentPage * window.container.clientHeight;
+  var duration = window.maxDuration * Math.abs(window.translateY - oldTranslateY) / window.container.clientHeight;
+  updateTranslateY(duration);
+  // evt.preventDefault();
+  if (window.lastPage != window.currentPage)
+    window.setTimeout(updatePlaying, 200);
+}
+
+function updateTranslateY(duration) {
+  window.container.style.transitionDuration = duration + "ms";
+  window.container.style.transform = "translateY(" + window.translateY + "px) translateZ(0px)";
+}
+
+function updatePlaying() {
+  if ((window.lastPage != window.currentPage) && isPlaying(window.videoes[window.lastPage]))
+    window.videoes[window.lastPage].pause();
+  if (!isPlaying(window.videoes[window.currentPage]))
+    window.videoes[window.currentPage].play();
+}
+
+function isPlaying(element) {
+  if (element)
+    return !!(element.currentTime > 0 && !element.paused && !element.ended && element.readyState > 2);
+}
+
+function load() {
+  // return;
+  window.container = document.getElementById("div0");
+  window.container.addEventListener("touchstart", touchStart, false);
+  window.container.addEventListener("touchmove",  touchMove,  false);
+  window.container.addEventListener("touchend",   touchEnd,   false);
+  window.minY = -(window.container.scrollHeight - window.container.clientHeight);
+  window.maxY = 0;
+  window.maxDuration = 500.0;
+  window.pageSwitchThreshold = window.container.clientHeight / 3;
+  window.translateY = window.lastY = window.lastPage = window.currentPage = 0;
+  window.pages = document.getElementsByClassName("page");
+  window.videoes = document.getElementsByTagName("video");
+  updateTranslateY();
+  updatePlaying();
+}
+</script>
+</head>
+<body onload="load()">
+<div id="div0" class="container">
+<div id="div1" class="page">
+    <p> page 1
+    <video controls style="width:100%" poster="https://xp.qpic.cn/oscar_pic/0/21e309030c9c4bcd8d1755866d01pict/480">
+        <source src="http://v.weishi.qq.com/v.weishi.qq.com/1047_de3d8b55daba4e2c91e23d83eb19vide.f0.mp4" 
+                type='video/mp4;codecs="avc1.42E01E, mp4a.40.2"' />
+    </video>
+</div>
+<div id="div2" class="page">
+    <p> page 2
+    <video controls style="width:100%" poster="https://xp.qpic.cn/oscar_pic/0/5cf4adf42b4e4e04b7908e305e79pict/480">
+        <source src="http://v.weishi.qq.com/v.weishi.qq.com/1047_dbdecd4b2c514858adf86392ec47vide.f0.mp4"
+                type='video/mp4;codecs="avc1.42E01E, mp4a.40.2"' />
+    </video>
+</div>
+<div id="div3" class="page">
+    <p> page 3
+    <video controls style="width:100%" poster="https://xp.qpic.cn/oscar_pic/0/547b2d5ee4bd4a5898498f924bb1pict/480">
+        <source src="http://v.weishi.qq.com/v.weishi.qq.com/1047_6db1dfcb20f54add9154bc107114vide.f0.mp4"
+                type='video/mp4;codecs="avc1.42E01E, mp4a.40.2"' />
+    </video>
+</div>
+<div id="div4" class="page">
+    <p> page 4
+    <video controls style="width:100%" poster="https://xp.qpic.cn/oscar_pic/0/5c7649ecb2ea47fdb805ea261402pict/480">
+        <source src="http://v.weishi.qq.com/v.weishi.qq.com/1047_41047e2178ff488bba17572dae74vide.f0.mp4" 
+                type='video/mp4;codecs="avc1.42E01E, mp4a.40.2"' />
+    </video>
+  </div>
+  <div id="div5" class="page">
+    <p> page 5
+    <video controls style="width:100%" poster="https://www.html5rocks.com/en/tutorials/video/basics/poster.png">
+        <source src="https://www.html5rocks.com/en/tutorials/video/basics/devstories.webm" 
+                type='video/webm;codecs="vp8, vorbis"' />
+        <source src="https://www.html5rocks.com/en/tutorials/video/basics/devstories.mp4" 
+                type='video/mp4;codecs="avc1.42E01E, mp4a.40.2"' />
+        <track src="https://www.html5rocks.com/en/tutorials/video/basics/devstories-en.vtt" label="English subtitles" 
+                kind="subtitles" srclang="en" default></track>
+    </video>
+  </div>
+</div>
+</body>
+</html>
