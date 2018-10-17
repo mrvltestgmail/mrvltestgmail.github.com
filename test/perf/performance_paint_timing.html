@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+<title>PerformancePaintTiming First (Contentful) Paint</title>
+<style type="text/css">
+html, body {
+  width: 100%;
+  height: 100%;
+}
+#div {
+  width: 64px;
+  height: 64px;
+  background-color: #0000FF;
+}
+</style>
+<script type="text/javascript">
+function showPaintTimingsByTimeout() {
+  if (window.performance) {
+    let performance = window.performance;
+    let performanceEntries = performance.getEntriesByType('paint');
+    performanceEntries.forEach( (entry, i, entries) => {
+      console.log(`showPaintTimingsByTimeout: ${i}. ${entry.name} ${entry.startTime} milliseconds.`);
+    });
+  } else {
+    console.log('showPaintTimingsByTimeout: Performance timing isn\'t supported.');
+  }
+}
+
+function showPaintTimingsByObserver() {
+  if("PerformanceObserver" in window){
+    let observerPromise = new Promise((resolve, reject)=>{
+      let observer = new PerformanceObserver((list)=>{
+        resolve(list);
+      });
+
+      observer.observe({
+        entryTypes: ["paint"]
+      });
+    }).then((list)=>{
+      list.getEntries().forEach((entry, i, entries)=>{
+        console.log(`showPaintTimingsByObserver: ${i}. ${entry.name}: ${entry.startTime}  milliseconds.`);
+      });
+    }).catch((error)=>{
+      console.warn("error");
+    });
+  } else {
+    console.log('showPaintTimingsByObserver: Performance timing isn\'t supported.');
+  }
+}
+function addContentfulPaintText() {
+  const elText = document.createElement('P');
+  elText.textContent = 'First (Contentful) Paint';
+  document.body.append(elText);
+}
+showPaintTimingsByObserver();
+setTimeout("showPaintTimingsByTimeout()", 400);
+setTimeout("addContentfulPaintText()", 700);
+setTimeout("showPaintTimingsByTimeout()", 1000);
+</script>
+</head>
+<body>
+<div id="div">
+</div>
+</body>
+</html>
