@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<title>Loop Image</title>
+<script type="text/javascript">
+    function onload() {
+        let img = document.getElementById("img");
+        let i = 0;
+        let max_images = 10;
+        setInterval(() => {
+            img.src = "000" + i + ".jpeg";
+            i = (i + 1) % max_images;
+            console.log(img.src);
+        }, 2000);
+    }
+    window.addEventListener("load", onload);
+</script>
+</head>
+<body>
+<image id="img" src="0000.jpeg" style="width:360px;height:600px"/>
+<div>
+</div>
+</body>
+</html>
